@@ -1,5 +1,5 @@
 {
-    "name": "ahmedtaha/fourjawaly-package",
+    "name": "ahmedtaha-dev/fourjawaly-package",
     "description": "A Laravel package for managing fourjawaly services.",
     "license": "MIT",
     "autoload": {
