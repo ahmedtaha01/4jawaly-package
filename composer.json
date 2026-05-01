@@ -1,0 +1,12 @@
+{
+    "name": "ahmedtaha/fourjawaly-package",
+    "description": "A Laravel package for managing fourjawaly services.",
+    "autoload": {
+        "psr-4": {
+            "AhmedTaha\\FourjawalyPackage\\": "src/"
+        }
+    },
+    "require": {
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    }
+}
