@@ -54,9 +54,37 @@ FOURJAWALY_SENDER_NAME=your_registered_sender
 
 ## Usage
 
-### Send a message
+### Send a message (facade)
 
-Inject or resolve `FourJawalyService` and call `sendMessage` with an array of phone numbers and the SMS body:
+The package includes `FourJawalyFacade`, which proxies to `FourJawalyService`:
+
+```php
+use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
+
+$result = FourJawalyFacade::sendMessage(
+    ['9665XXXXXXXX', '9665YYYYYYYY'],
+    'Your message text here.'
+);
+```
+
+`sendMessage` returns the decoded JSON array from the API on success.
+
+On failure it throws `AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException` (non-2xx responses and transport errors are wrapped).
+
+```php
+use AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException;
+use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
+
+try {
+    FourJawalyFacade::sendMessage(['9665XXXXXXXX'], 'Hello');
+} catch (FourJawalyException $e) {
+    // Log or handle $e->getMessage()
+}
+```
+
+### Send a message (dependency injection)
+
+You can inject or resolve `FourJawalyService` instead of the facade:
 
 ```php
 use AhmedTaha\FourjawalyPackage\FourJawalyService;
@@ -69,30 +97,16 @@ $result = $fourJawaly->sendMessage(
 );
 ```
 
-`sendMessage` returns the decoded JSON array from the API on success.
-
-On failure it throws `AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException` (non-2xx responses and transport errors are wrapped).
-
-```php
-use AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException;
-
-try {
-    $fourJawaly->sendMessage(['9665XXXXXXXX'], 'Hello');
-} catch (FourJawalyException $e) {
-    // Log or handle $e->getMessage()
-}
-```
-
 ### Optional: validate input with the DTO
 
 `FourJawalyDTO` checks that numbers are non-empty strings, use the `966` country prefix, and do not start with `+`. It also ensures the message is not blank. Use it before calling the API if you want consistent validation:
 
 ```php
 use AhmedTaha\FourjawalyPackage\DTO\FourJawalyDTO;
-use AhmedTaha\FourjawalyPackage\FourJawalyService;
+use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
 
 $dto = new FourJawalyDTO(['9665XXXXXXXX'], 'Hello from Laravel');
-app(FourJawalyService::class)->sendMessage($dto->phones, $dto->message);
+FourJawalyFacade::sendMessage($dto->phones, $dto->message);
 ```
 
 ## API endpoint
