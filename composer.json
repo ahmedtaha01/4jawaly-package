@@ -1,6 +1,7 @@
 {
     "name": "ahmedtaha/fourjawaly-package",
     "description": "A Laravel package for managing fourjawaly services.",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "AhmedTaha\\FourjawalyPackage\\": "src/"

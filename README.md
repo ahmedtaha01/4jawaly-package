@@ -119,4 +119,4 @@ Payload shape is built inside `FourJawalyService` (`messages` array with `text`,
 
 ## License
 
-Specify your license in `composer.json` or this file when you publish the package.
+This package is licensed under the [MIT License](https://opensource.org/licenses/MIT), as declared in `composer.json` (`"license": "MIT"`).
