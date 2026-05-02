@@ -44,4 +44,14 @@ class FourJawalyDTO
 
         return $message;
     }
+
+    public function getPhones(): array
+    {
+        return $this->phones;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
 }
