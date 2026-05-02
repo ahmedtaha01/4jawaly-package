@@ -54,20 +54,20 @@ FOURJAWALY_SENDER_NAME=your_registered_sender
 
 ## Usage
 
-### Send a message (facade)
+### Send a message
 
-The package includes `FourJawalyFacade`, which proxies to `FourJawalyService`:
+Use `FourJawalyFacade` to send SMS:
 
 ```php
 use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
 
-$result = FourJawalyFacade::sendMessage(
+$result = FourJawalyFacade::send(
     ['9665XXXXXXXX', '9665YYYYYYYY'],
     'Your message text here.'
 );
 ```
 
-`sendMessage` returns the decoded JSON array from the API on success.
+`send` returns the decoded JSON array from the API on success.
 
 On failure it throws `AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException` (non-2xx responses and transport errors are wrapped).
 
@@ -76,25 +76,10 @@ use AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException;
 use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
 
 try {
-    FourJawalyFacade::sendMessage(['9665XXXXXXXX'], 'Hello');
+    FourJawalyFacade::send(['9665XXXXXXXX'], 'Hello');
 } catch (FourJawalyException $e) {
     // Log or handle $e->getMessage()
 }
-```
-
-### Send a message (dependency injection)
-
-You can inject or resolve `FourJawalyService` instead of the facade:
-
-```php
-use AhmedTaha\FourjawalyPackage\FourJawalyService;
-
-$fourJawaly = app(FourJawalyService::class);
-
-$result = $fourJawaly->sendMessage(
-    ['9665XXXXXXXX', '9665YYYYYYYY'],
-    'Your message text here.'
-);
 ```
 
 ### Optional: validate input with the DTO
@@ -106,7 +91,7 @@ use AhmedTaha\FourjawalyPackage\DTO\FourJawalyDTO;
 use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
 
 $dto = new FourJawalyDTO(['9665XXXXXXXX'], 'Hello from Laravel');
-FourJawalyFacade::sendMessage($dto->phones, $dto->message);
+FourJawalyFacade::send($dto->phones, $dto->message);
 ```
 
 ## API endpoint
@@ -115,8 +100,8 @@ The client posts to:
 
 `https://api-sms.4jawaly.com/api/v1/account/area/sms/send`
 
-Payload shape is built inside `FourJawalyService` (`messages` array with `text`, `numbers`, and `sender`).
+The package sends a JSON body with a `messages` array (`text`, `numbers`, and `sender`).
 
 ## License
 
-This package is licensed under the [MIT License](https://opensource.org/licenses/MIT), as declared in `composer.json` (`"license": "MIT"`).
+This package is licensed under the [MIT License](https://opensource.org/licenses/MIT)
