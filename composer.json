@@ -4,11 +4,16 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "AhmedTaha\\FourjawalyPackage\\": "src/"
+            "AhmedTaha\\FourjawalyPackage\\": "src/",
+            "AhmedTaha\\FourjawalyPackage\\Tests\\": "tests/"
         }
     },
     "require": {
         "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
         "illuminate/http": "^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "orchestra/testbench": "^10.11"
     }
 }

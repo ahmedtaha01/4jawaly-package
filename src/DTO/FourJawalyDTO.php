@@ -31,6 +31,10 @@ class FourJawalyDTO
             if (!preg_match('/^966/', $phone)) {
                 throw new \InvalidArgumentException("Phone number must start with 966");
             }
+
+            if (!preg_match('/^966[0-9]{9}$/', $phone)) {
+                throw new \InvalidArgumentException("Phone number must be 9 digits after 966");
+            }
         }
 
         return $phones;
