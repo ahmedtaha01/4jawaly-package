@@ -2,8 +2,8 @@
 
 namespace AhmedTaha\FourjawalyPackage;
 
-use AhmedTaha\FourjawalyPackage\DTO\FourJawalyDTO;
 use AhmedTaha\FourjawalyPackage\Exceptions\FourJawalyException;
+use AhmedTaha\FourjawalyPackage\Validation\FourJawalyValidation;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -20,34 +20,24 @@ class FourJawalyService
         $this->apiKey = (string) config('fourjawaly.api_key');
         $this->apiSecret = (string) config('fourjawaly.api_secret');
         $this->sender = (string) config('fourjawaly.sender_name');
-        $this->fourJawalyEndpoint = $this->getFourJawalyEndpoint();
+        $this->fourJawalyEndpoint = config('fourjawaly.four_jawaly_base_url');
     }
 
     public function send(array $phones, string $message): array
     {
-        $fourJawalyDTO = new FourJawalyDTO($phones, $message);
+        FourJawalyValidation::validate($phones, $message);
 
         $appHash = $this->getAppHash();
 
-        $messageTemplate = $this->buildMessageTemplate($fourJawalyDTO);
+        $messageTemplate = $this->buildMessageTemplate($phones, $message);
 
-        try {
+        $response = $this->sendSms($appHash, $messageTemplate);
 
-            $response = $this->sendSms($appHash, $messageTemplate);
-
-            if ($response->failed()) {
-                throw new FourJawalyException("Failed to send message: " . $response->body());
-            }
-
-            return $response->json();
-        } catch (\Exception $e) {
-            throw new FourJawalyException("An error occurred: " . $e->getMessage());
+        if ($response->failed()) {
+            throw new FourJawalyException("Failed to send message: " . $response->body());
         }
-    }
 
-    private function getFourJawalyEndpoint(): string
-    {
-        return 'https://api-sms.4jawaly.com/api/v1/account/area/sms/send';
+        return $response->json();
     }
 
     private function getAppHash()
@@ -61,16 +51,16 @@ class FourJawalyService
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Basic ' . $appHash,
-        ])->post($this->fourJawalyEndpoint, $messageTemplate);
+        ])->post($this->fourJawalyEndpoint.'/account/area/sms/send', $messageTemplate);
     }
 
-    private function buildMessageTemplate(FourJawalyDTO $dto): array
+    private function buildMessageTemplate(array $phones, string $message): array
     {
         return [
             "messages" => [
                 [
-                    "text" => $dto->getMessage(),
-                    "numbers" => $dto->getPhones(),
+                    "text" => $message,
+                    "numbers" => $phones,
                     "sender" => $this->sender,
                 ],
             ],
