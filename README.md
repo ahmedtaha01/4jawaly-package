@@ -82,17 +82,7 @@ try {
 }
 ```
 
-### Optional: validate input with the DTO
-
-`FourJawalyDTO` checks that numbers are non-empty strings, use the `966` country prefix, and do not start with `+`. It also ensures the message is not blank. Use it before calling the API if you want consistent validation:
-
-```php
-use AhmedTaha\FourjawalyPackage\DTO\FourJawalyDTO;
-use AhmedTaha\FourjawalyPackage\Facades\FourJawalyFacade;
-
-$dto = new FourJawalyDTO(['9665XXXXXXXX'], 'Hello from Laravel');
-FourJawalyFacade::send($dto->phones, $dto->message);
-```
+`FourJawalyFacade::send()` validates input with `AhmedTaha\FourjawalyPackage\Validation\FourJawalyValidation` before calling the API: at least one phone number, each number a string using the `966` prefix with nine digits after it (no leading `+`), and a non-empty message. Validation failures throw `FourJawalyException`. You can call `FourJawalyValidation::validate($phones, $message)` yourself if you need the same checks outside `send()`.
 
 ## API endpoint
 
